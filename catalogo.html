@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang="es"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><!--OG-->
+<style>
+:root{--n:#0f1f4b;--o:#f26a21;--g:#25d366;--bd:#e3e8f0;--mu:#667189;--bg:#f4f6fa}*{box-sizing:border-box}
+body{margin:0;font-family:Inter,system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:#162038}
+header{background:linear-gradient(160deg,#0b1b3f,#16306b);color:#fff;padding:18px 16px 14px;position:sticky;top:0;z-index:20}
+.w{max-width:1200px;margin:0 auto}.top{display:flex;align-items:center;gap:12px}.top img{height:44px;max-width:120px;object-fit:contain;background:#fff;border-radius:8px;padding:3px}
+.top b{font-size:18px}.top small{display:block;color:#aab6d3;font-style:italic}
+input{width:100%;margin-top:12px;padding:11px 14px;border-radius:10px;border:0;font-size:15px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:12px 16px}.chip{border:1px solid var(--bd);background:#fff;border-radius:99px;padding:7px 14px;font-size:13px;white-space:nowrap;cursor:pointer}.chip.on{background:var(--n);color:#fff;border-color:var(--n)}
+main{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px;padding:4px 16px 96px;max-width:1232px;margin:0 auto}
+.c{background:#fff;border:1px solid var(--bd);border-radius:12px;overflow:hidden;display:flex;flex-direction:column;box-shadow:0 1px 3px rgba(16,24,40,.06)}
+.c .im{aspect-ratio:1/1;object-fit:contain;width:100%;background:#fff;border-bottom:1px solid var(--bd);cursor:pointer}.c .b{padding:12px;display:flex;flex-direction:column;flex:1;gap:3px}
+.br{font-size:11px;font-weight:700;color:var(--mu);text-transform:uppercase;letter-spacing:.05em}.nm{font-weight:600;line-height:1.3;cursor:pointer}.pr{font-size:20px;font-weight:800;margin-top:6px}.pr small{font-size:12px;color:var(--mu);font-weight:400}
+.av{font-size:12px}.ok{color:#15803d}.no{color:#b45309}
+button{font:inherit;cursor:pointer}.btn{border:1px solid var(--bd);background:#fff;border-radius:9px;padding:9px 12px;font-size:13px;font-weight:600}.wa{background:var(--g);border-color:var(--g);color:#fff}.pri{background:var(--n);border-color:var(--n);color:#fff}
+.row{display:flex;gap:6px;margin-top:auto;padding-top:10px}.row .btn{flex:1}
+#fab{position:fixed;right:16px;bottom:16px;z-index:30;background:var(--g);color:#fff;border:0;border-radius:99px;padding:14px 20px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);display:none}
+.ov{position:fixed;inset:0;background:rgba(11,18,32,.55);z-index:40;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:16px}.md{background:#fff;border-radius:14px;max-width:760px;width:100%;margin:20px 0;padding:18px;position:relative}
+.x{position:absolute;right:12px;top:10px;border:0;background:#eef1f7;border-radius:8px;width:32px;height:32px}.g{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:640px){.g{grid-template-columns:1fr}}
+.big{width:100%;aspect-ratio:1/1;object-fit:contain;border:1px solid var(--bd);border-radius:10px}.th{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.th img{width:56px;height:56px;object-fit:contain;border:1px solid var(--bd);border-radius:8px;cursor:pointer}
+ul{padding-left:18px;margin:6px 0}.it{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}.q button{width:28px;height:28px;border:1px solid var(--bd);background:#fff;border-radius:6px}
+.em{text-align:center;color:var(--mu);padding:40px;grid-column:1/-1}
+</style></head><body>
+<header><div class="w"><div class="top"><img id="lg" alt="" style="display:none"><div><b id="nm">Catálogo</b><small id="sl"></small></div></div><input id="q" placeholder="Buscar productos o servicios…"></div></header>
+<div class="w"><div class="chips" id="ch"></div></div><main id="gr"></main><button id="fab"></button><div id="mo"></div>
+<script src="./art.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script src="./supabase-config.js"></script>
+<script>
+let D={cfg:{},products:[]},cat='Todos',q='',sel={};
+const $=i=>document.getElementById(i),esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const im=u=>u?(u.startsWith('art:')&&window.SRC?SRC(u):(u.startsWith('/')?u:(window.SRC?SRC(u):u))):(window.SRC?SRC(''):'');
+const money=(n,c)=>(c==='USD'?'US$ ':'S/ ')+Number(n||0).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
+const wa=t=>{if(!D.cfg.wa){alert('El WhatsApp de ventas aún no está configurado.');return}window.open('https://wa.me/'+D.cfg.wa+'?text='+encodeURIComponent(t),'_blank')};
+const link=p=>new URL('./catalogo.html?p='+encodeURIComponent(p.code),location.href).href;
+const one=p=>wa('Hola '+D.cfg.name+', quisiera información de: '+p.desc+' (Cód. '+p.code+').\n'+link(p));
+function list(){return D.products.filter(p=>(cat==='Todos'||p.cat===cat)&&(p.code+' '+p.desc+' '+p.brand+' '+p.cat).toLowerCase().includes(q.toLowerCase()))}
+function render(){
+ const cats=['Todos',...new Set(D.products.map(p=>p.cat))];$('ch').innerHTML=cats.map(c=>`<button class="chip ${c===cat?'on':''}" data-c="${esc(c)}">${esc(c)}</button>`).join('');
+ const L=list();$('gr').innerHTML=L.length?L.map(p=>`<div class="c"><img class="im" data-o="${p.id}" loading="lazy" src="${esc(im(p.imgs[0]||''))}" alt="${esc(p.desc)}"><div class="b"><div class="br">${esc(p.brand||p.cat)}</div><div class="nm" data-o="${p.id}">${esc(p.desc)}</div>${D.cfg.prices?`<div class="pr">${p.kind==='servicio'?'<small>desde </small>':''}${money(p.price,p.cur)} <small>/ ${esc(p.unit)}</small></div>`:''}<div class="av ${p.avail?'ok':'no'}">${p.kind==='servicio'?'Servicio':p.avail?'● Disponible':'● Consultar disponibilidad'}</div><div class="row"><button class="btn" data-a="${p.id}">+ Mi consulta</button><button class="btn wa" data-w="${p.id}">WhatsApp</button></div></div></div>`).join(''):'<div class="em">No se encontraron productos</div>';
+ const n=Object.values(sel).reduce((a,b)=>a+b,0);$('fab').style.display=n?'block':'none';$('fab').textContent='Enviar consulta por WhatsApp ('+n+')'}
+function open(id){const p=D.products.find(x=>x.id===id);if(!p)return;let k=0;const draw=()=>{$('mo').innerHTML=`<div class="ov" id="ov"><div class="md"><button class="x" id="cl">✕</button><div class="g"><div><img class="big" src="${esc(im(p.imgs[k]||''))}"><div class="th">${p.imgs.map((u,i)=>`<img data-k="${i}" src="${esc(im(u))}">`).join('')}</div></div><div><div class="br">${esc(p.brand||p.cat)} · ${esc(p.code)}</div><h2 style="margin:4px 0">${esc(p.desc)}</h2>${D.cfg.prices?`<div class="pr">${money(p.price,p.cur)} <small>/ ${esc(p.unit)}</small></div>`:''}<div class="av ${p.avail?'ok':'no'}">${p.kind==='servicio'?'Servicio':p.avail?'● Disponible':'● Consultar disponibilidad'}</div>${p.specs?'<b style="display:block;margin-top:10px">Especificaciones</b><ul>'+p.specs.split('\n').filter(Boolean).map(t=>'<li>'+esc(t)+'</li>').join('')+'</ul>':''}<div class="row" style="flex-direction:column"><button class="btn wa" id="w1">Consultar por WhatsApp</button><button class="btn" id="a1">+ Agregar a mi consulta</button></div></div></div></div></div>`;
+  $('cl').onclick=()=>$('mo').innerHTML='';$('ov').onclick=e=>{if(e.target.id==='ov')$('mo').innerHTML=''};$('w1').onclick=()=>one(p);$('a1').onclick=()=>{sel[id]=(sel[id]||0)+1;render();$('mo').innerHTML=''};document.querySelectorAll('.th img').forEach(i=>i.onclick=()=>{k=+i.dataset.k;draw()})};draw()}
+function cart(){const ids=Object.keys(sel).filter(i=>sel[i]>0),P=ids.map(i=>D.products.find(x=>x.id===i)).filter(Boolean);
+ $('mo').innerHTML=`<div class="ov" id="ov"><div class="md"><button class="x" id="cl">✕</button><h2 style="margin:0 0 8px">Mi consulta</h2>${P.map(p=>`<div class="it"><div><b>${esc(p.desc)}</b><div class="br">${esc(p.code)}</div></div><div class="q"><button data-m="${p.id}">−</button> <b>${sel[p.id]}</b> <button data-p="${p.id}">+</button></div></div>`).join('')||'<div class="em">Aún no agregó productos</div>'}<div class="row" style="margin-top:14px"><button class="btn wa" id="send">Enviar por WhatsApp</button></div></div></div>`;
+ $('cl').onclick=()=>$('mo').innerHTML='';$('ov').onclick=e=>{if(e.target.id==='ov')$('mo').innerHTML=''};
+ document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{sel[b.dataset.m]--;if(sel[b.dataset.m]<=0)delete sel[b.dataset.m];render();cart()});document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{sel[b.dataset.p]++;render();cart()});
+ $('send').onclick=()=>{if(!P.length)return;wa('Hola '+D.cfg.name+', quisiera información y cotización de:\n'+P.map(p=>'• '+sel[p.id]+' x '+p.desc+' (Cód. '+p.code+')').join('\n')+'\n\nGracias.')}}
+document.addEventListener('click',e=>{const t=e.target.closest('[data-c],[data-o],[data-a],[data-w]');if(!t)return;if(t.dataset.c!=null){cat=t.dataset.c;render()}else if(t.dataset.o)open(t.dataset.o);else if(t.dataset.a){sel[t.dataset.a]=(sel[t.dataset.a]||0)+1;render()}else if(t.dataset.w)one(D.products.find(x=>x.id===t.dataset.w))});
+$('q').oninput=e=>{q=e.target.value;render()};$('fab').onclick=cart;
+window.vpeSupabase.rpc('get_public_catalog').then(({data,error})=>{if(error)throw error;D=data;D.products=(D.products||[]).map(p=>({...p,imgs:p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[])}));$('nm').textContent=D.cfg.name||'Catálogo';$('sl').textContent=D.cfg.slogan||'';if(D.cfg.logo){$('lg').src=D.cfg.logo;$('lg').style.display='block'}render();const p=new URLSearchParams(location.search).get('p'),x=D.products.find(y=>y.code===p);if(x)open(x.id)}).catch(e=>{$('gr').innerHTML='<div class="em">No se pudo cargar el catálogo: '+esc(e.message||'Error')+'</div>'});
+</script></body></html>

@@ -1,0 +1,84 @@
+GUIA DE CONFIGURACION — VENTAPE
+===============================
+
+A. RESPALDO
+-----------
+1. Entre al proyecto Supabase VentaPE.
+2. Antes de ejecutar SQL, cree una copia de seguridad disponible para su plan
+   o exporte las tablas críticas.
+3. No elimine tablas ni ejecute supabase/schema.sql sobre la base existente.
+
+B. EJECUTAR LA MIGRACION
+------------------------
+1. Abra Supabase > SQL Editor.
+2. Cree una consulta nueva.
+3. Abra el archivo supabase/MIGRACION_SEGURIDAD_Y_CORRELATIVOS.sql.
+4. Copie todo su contenido y péguelo en SQL Editor.
+5. Presione Run una sola vez.
+6. El resultado esperado es: Success. No rows returned.
+
+Esta migración no reinicia los correlativos existentes. Actualiza la función
+que limita las modificaciones de stock, la política records_update y la función
+reserve_doc_number. No ejecuta cambios sobre perfiles ni documentos existentes.
+
+C. VERIFICAR RESULTADOS
+----------------------
+Ejecute estas consultas por separado:
+
+1) Contadores:
+select doc_type, last_value
+from public.doc_counters
+order by doc_type;
+
+2) Políticas de app_records:
+select policyname, cmd
+from pg_policies
+where schemaname='public' and tablename='app_records'
+order by policyname;
+
+3) Trigger de protección de productos:
+select tgname, tgenabled
+from pg_trigger
+where tgrelid='public.app_records'::regclass
+  and not tgisinternal;
+
+4) Funciones:
+select proname, prosecdef
+from pg_proc p
+join pg_namespace n on n.oid=p.pronamespace
+where n.nspname='public'
+  and proname in ('reserve_doc_number','is_admin','current_role');
+
+D. DESPLEGAR ADMIN-USERS
+------------------------
+Desde la terminal, en la carpeta del proyecto:
+
+supabase login
+supabase link --project-ref ylaxubowqyaabsvcwyhe
+supabase secrets set SUPABASE_SERVICE_ROLE_KEY=PEGAR_SECRETO_AQUI
+supabase functions deploy admin-users
+
+Reemplace PEGAR_SECRETO_AQUI por la clave privada obtenida desde Supabase.
+No comparta esa clave, no la pegue en index.html y no la suba a GitHub.
+
+E. PUBLICAR FRONTEND
+--------------------
+Suba index.html, catalogo.html, art.js, supabase-config.js y las carpetas
+supabase/ a la raíz del repositorio GitHub. Configure GitHub Pages para la
+rama main y carpeta /(root).
+
+F. PRUEBAS OBLIGATORIAS
+-----------------------
+- Iniciar sesión con una cuenta admin y otra vendedor.
+- Comprobar que el vendedor no pueda crear/editar/eliminar productos ni cambiar
+  precios o configuración.
+- Comprobar que el vendedor pueda registrar ventas y que el stock disminuya.
+- Comprobar que el vendedor no pueda aumentar el stock ni dejarlo negativo.
+- Emitir cotización, boleta y factura de prueba y revisar correlativos.
+- Comprobar persistencia tras cerrar sesión y entrar desde otro equipo.
+- Comprobar administración de usuarios, cambio de contraseña y protección del
+  último administrador.
+- Comprobar catálogo público, imágenes, PDF, Excel y WhatsApp.
+
+No use datos reales de clientes ni opere comercialmente hasta completar estas
+pruebas en el proyecto real.
