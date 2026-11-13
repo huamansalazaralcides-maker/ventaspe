@@ -1,0 +1,48 @@
+VENTAPE — PASOS PARA ACTIVAR LAS CORRECCIONES
+
+1) CATÁLOGO: MOSTRAR / OCULTAR PRECIOS
+- En Supabase > SQL Editor, ejecutar el archivo:
+  supabase/FIX_CATALOGO_PRECIOS.sql
+- En VentaPE > Configuración, desmarcar "Mostrar precios en el catálogo público".
+- Pulsar "Guardar configuración".
+- Abrir el catálogo público en una pestaña privada o en otro celular.
+- Para comprobar el resultado, volver a marcar, guardar y recargar el catálogo.
+El SQL solo actualiza la función get_public_catalog; no cambia ni elimina productos.
+
+2) USUARIOS Y CONTRASEÑAS
+El frontend llama a la Edge Function "admin-users". El error
+"Failed to send a request to the Edge Function" suele aparecer cuando la función
+no está desplegada o la URL de Supabase no es accesible.
+
+Despliegue desde Supabase:
+- Abrir el proyecto VentasPE > Edge Functions.
+- Crear/desplegar una función llamada EXACTAMENTE: admin-users.
+- Subir el contenido de supabase/functions/admin-users/index.ts.
+- Verificar que estén disponibles los secretos de entorno:
+  SUPABASE_URL
+  SUPABASE_ANON_KEY
+  SUPABASE_SERVICE_ROLE_KEY
+- La service role key debe permanecer como secreto del servidor; NUNCA pegarla
+  en supabase-config.js, GitHub Pages ni en el navegador.
+- Luego iniciar sesión como administrador y probar crear un vendedor.
+El código de la función valida sesión y rol admin. No se debe crear una cuenta
+de vendedor desde el navegador sin esta función.
+
+3) NAVEGACIÓN MÓVIL
+- La interfaz conserva el menú horizontal superior en móvil.
+- Se ajustaron espaciados, controles táctiles y desbordamientos.
+- Al agregar productos desde el catálogo o la venta aparece una burbuja
+  flotante "Cotización" que lleva al documento en curso.
+- El escáner QR existente sigue disponible desde "Nueva venta"; requiere HTTPS
+  y permiso de cámara. También puede digitarse el código en el buscador.
+
+PUBLICACIÓN
+- Reemplazar los archivos del repositorio GitHub por el contenido de este ZIP.
+- No subir contraseñas, claves secretas ni archivos .env.
+- GitHub Pages puede tardar unos minutos en publicar.
+- Después de publicar, probar en PC y celular.
+
+IMPORTANTE
+Esta entrega contiene cambios de frontend y SQL auxiliar. No se puede certificar
+la conexión real de Supabase, el despliegue de Edge Functions ni el envío de PDF
+por WhatsApp desde aquí; esas pruebas deben realizarse en el proyecto conectado.

@@ -44,6 +44,32 @@ td{padding:10px 12px;border-top:1px solid var(--bd);font-size:14px}tbody tr:hove
 @keyframes pop{from{opacity:0;transform:translateY(8px) scale(.985)}}.mdl{animation:pop .16s ease}
 .toast{position:fixed;right:16px;bottom:16px;z-index:70;background:#0f1f4b;color:#fff;border-radius:10px;padding:11px 16px;font-size:14px;box-shadow:var(--sh2);display:flex;gap:8px;align-items:center;animation:pop .2s ease;max-width:90vw}.toast.er{background:#991b1b}
 @media print{body *{visibility:hidden}#pa,#pa *{visibility:visible}#pa{position:absolute;left:0;top:0;width:100%}}
+
+/* Ajustes de navegación y operación móvil VentaPE */
+@media(max-width:767px){
+  body{overflow-x:hidden}
+  .tab{padding:12px 13px;font-size:13px;flex:0 0 auto}
+  header.flex.items-center.justify-between{padding:10px 12px!important;gap:8px!important}
+  header .text-lg{font-size:16px}
+  header button.btn{min-width:0!important;padding:8px 10px}
+  header button[aria-label="Alertas"]{min-width:42px}
+  .mx-auto.p-5{padding:10px!important}
+  .card{border-radius:12px}
+  input.inp,select.inp,textarea.inp{font-size:16px;min-height:42px}
+  .btn{min-height:40px}
+  table{display:block;max-width:100%;overflow-x:auto;white-space:nowrap}
+  .pdoc{max-width:100%}
+  /* Los formularios y paneles no deben forzar ancho de escritorio */
+  .grid{min-width:0}
+  .overflow-x-auto{-webkit-overflow-scrolling:touch}
+}
+@media(max-width:480px){
+  .tab{padding:11px 10px;font-size:12px}
+  .mx-auto.p-5{padding:8px!important}
+  .card.flex.flex-col.overflow-hidden img{aspect-ratio:4/3!important}
+  .btn{font-size:12px;padding:8px 10px}
+}
+
 </style></head>
 <body><div id="root"></div>
 <script>
@@ -516,7 +542,7 @@ function App(){
  <div className="mx-auto p-5" style=${{maxWidth:1760}}>
  ${tab==='dash'&&admin&&html`<${Dash} db=${db} toast=${toast} go=${go} onView=${setView} onSeg=${setSg}/>`}${tab==='sell'&&html`<${Sell} db=${db} dr=${dr} setDr=${setDr} add=${add} onEmit=${onEmit} last=${last} onView=${setView} cancelEdit=${()=>setDr(DR)} onScan=${()=>setScan(true)}/>`}${tab==='docs'&&html`<${Docs} db=${db} me=${user} admin=${admin} onConvert=${convert} onView=${setView} onSeg=${setSg} toast=${toast} key=${"d"+JSON.stringify(nv)} init=${nv} onEdit=${startEdit} onDel=${delDoc}/>`}
  ${tab==='cat'&&html`<${Cat} db=${db} setDb=${setDb} admin=${admin} ask=${ask} add=${add} cart=${dr.items} toast=${toast} dr=${dr} setDr=${setDr} onEmit=${onEmit} last=${last} onView=${setView} cancelEdit=${()=>setDr(DR)} onScan=${()=>setScan(true)} key=${"c"+JSON.stringify(nv)} init=${nv}/>`}${tab==='cli'&&html`<${Cli} db=${db} setDb=${setDb} admin=${admin} ask=${ask} toast=${toast} go=${go} init=${nv} key=${"l"+JSON.stringify(nv)}/>`}${tab==='cfg'&&admin&&html`<div><${Cfg} db=${db} setDb=${setDb} ask=${ask} toast=${toast}/>${SH.kind==='supabase'?html`<${UsersSrv} ask=${ask} toast=${toast} me=${me}/>`:SH.mode?html`<div className="card p-4 mt-3"><div className="font-bold mb-1">Usuarios y accesos</div><div className="text-sm mu">En modo compartido el acceso se gestiona con el botón <b>Compartir</b> de esta página: el nivel <b>Contributor (Colaborador)</b> es vendedor y puede crear cotizaciones, boletas y facturas; <b>Editor o Propietario</b> es administrador (catálogo, configuración y eliminar documentos).</div></div>`:html`<${Users} db=${db} setDb=${setDb} ask=${ask} me=${me} toast=${toast}/>`}</div>`}
- ${tab==='cat'&&dr.items.length>0&&html`<button className="btn bp fixed shadow-lg xl:hidden" style=${{bottom:16,right:16,padding:'12px 18px'}} onClick=${()=>go('sell')}>Ir a Nueva venta · ${dr.items.length} ítems →</button>`}
+ ${(tab==='cat'||tab==='sell')&&dr.items.length>0&&html`<button aria-label="Abrir cotización" className="btn bp fixed shadow-lg" style=${{bottom:'calc(18px + env(safe-area-inset-bottom,0px))',right:16,zIndex:45,padding:'13px 17px',borderRadius:999,boxShadow:'0 8px 24px rgba(15,31,75,.28)'}} onClick=${()=>tab==='sell'?window.scrollTo({top:0,behavior:'smooth'}):go('sell')}>Cotización · ${dr.items.length} <span aria-hidden="true">→</span></button>`}
  ${scan&&html`<${Scanner} db=${db} add=${add} toast=${toast} onClose=${()=>setScan(false)}/>`}
  ${pal&&html`<${Palette} acts=${acts} db=${db} go=${go} onView=${setView} onClose=${()=>setPal(false)}/>`}
  ${cf&&html`<${ClientForm} db=${db} type=${cf.type} onCancel=${()=>setCf(null)} onDone=${clientDone}/>`}
