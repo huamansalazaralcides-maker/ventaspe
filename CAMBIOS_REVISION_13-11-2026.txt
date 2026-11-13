@@ -1,13 +1,10 @@
-VENTAPE — CAMBIOS DE ESTA REVISIÓN
+VENTAPE - REVISION DE INTERFAZ MOVIL Y CONFIGURACION
 Fecha: 13/11/2026
 
-- Catálogo WhatsApp: normaliza números peruanos de 9 dígitos a 51 + número y abre el chat con texto precargado.
-- Catálogo móvil: tarjetas y botones reorganizados para pantallas pequeñas.
-- App móvil: acceso flotante adicional para abrir el escáner QR desde cualquier pestaña.
-- Configuración: actualización funcional de setters de campos para evitar estados obsoletos al escribir.
-- Se verificó sintaxis JavaScript de index.html y catalogo.html con Node.js --check.
+Cambios realizados:
+1. El panel Documento de venta ahora aparece antes del listado de productos en pantallas móviles. En escritorio conserva la distribución de dos columnas.
+2. La burbuja Escanear QR tiene mayor contraste, tamaño, borde y prioridad visual.
+3. Se movió el componente de sección Sec fuera del componente Cfg. Antes se declaraba dentro de Cfg y se recreaba en cada render; eso podía desmontar los campos y provocar pérdida del foco mientras se escribía. Ahora mantiene identidad estable para permitir escribir de corrido.
 
-Pendiente de activación externa:
-- Ejecutar supabase/FIX_CATALOGO_PRECIOS.sql si aún no fue ejecutado en el proyecto.
-- Desplegar Edge Function supabase/functions/admin-users con sus secretos configurados.
-- Probar login, creación de vendedor, cámara en celular y enlaces WhatsApp en el entorno publicado.
+Se conserva la funcionalidad de WhatsApp sin cambios.
+No se modificó el backend ni las políticas de Supabase.

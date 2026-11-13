@@ -72,7 +72,7 @@ td{padding:10px 12px;border-top:1px solid var(--bd);font-size:14px}tbody tr:hove
 
 
 @media(max-width:767px){
- .qr-fab{position:fixed!important;left:12px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:46;border-radius:999px;background:#fff;box-shadow:0 8px 24px rgba(15,31,75,.22);padding:13px 15px}
+ .qr-fab{position:fixed!important;left:12px;bottom:calc(16px + env(safe-area-inset-bottom,0px));z-index:60;border-radius:999px;background:#1d4ed8!important;color:#fff!important;border:2px solid #fff!important;box-shadow:0 8px 28px rgba(15,31,75,.38);padding:15px 18px;font-weight:800;font-size:14px;min-height:50px}
 }
 </style></head>
 <body><div id="root"></div>
@@ -157,6 +157,7 @@ const Bd=({s})=>html`<span className=${'bd '+(BS[s]||'')}>${s}</span>`;
 const Modal=({title,children,onClose,wide})=>{useEffect(()=>{const h=e=>e.key==='Escape'&&onClose();window.addEventListener('keydown',h);return()=>window.removeEventListener('keydown',h)},[]);
  return html`<div className="fixed inset-0 z-50 flex items-start justify-center p-3 overflow-auto" style=${{background:'rgba(11,18,32,.55)',backdropFilter:'blur(3px)'}} onMouseDown=${e=>e.target===e.currentTarget&&onClose()}><div className=${'card mdl w-full my-6 '+(wide?'max-w-4xl':'max-w-lg')} style=${{boxShadow:'var(--sh2)'}}><div className="flex justify-between items-center px-5 py-3" style=${{borderBottom:'1px solid var(--bd)'}}><h3 className="font-bold text-base">${title}</h3><button className="btn sm" aria-label="Cerrar" onClick=${onClose}>✕</button></div><div className="p-5">${children}</div></div></div>`};
 const F=({l,children,c})=>html`<label className=${'block '+(c||'')}><span className="text-xs mu font-semibold">${l}</span>${children}</label>`;
+const Sec=({t,children})=>html`<div className="card p-4 space-y-2"><div className="font-bold">${t}</div>${children}</div>`;
 
 function Doc({d,cfg,prods}){
  const q=d.type==='cotizacion',fd=x=>new Date(x).toLocaleDateString('es-PE'),R=(l,v,b)=>html`<div className=${'flex justify-between '+(b?'font-bold text-base':'')}><span>${l}</span><span>${v}</span></div>`;
@@ -378,13 +379,13 @@ function SalePanel({db,dr,setDr,onEmit,last,onView,cancelEdit}){
 function Sell({db,dr,setDr,add,onEmit,last,onView,cancelEdit,onScan}){
  const [q,setQ]=useState(''),[cat,setCat]=useState('Todos');
  const cats=[...new Set(db.products.map(p=>p.cat||'General'))],prods=db.products.filter(p=>(p.code+p.desc+(p.brand||'')).toLowerCase().includes(q.toLowerCase())&&(cat==='Todos'||(p.cat||'General')===cat));
- return html`<div className="flex flex-col lg:flex-row gap-4 items-start"><div className="flex-1 min-w-0 w-full"><div className="flex gap-2 mb-2"><input autoFocus className="inp" placeholder="Buscar producto o escanear código y presionar Enter…" value=${q} onChange=${x=>setQ(x.target.value)} onKeyDown=${x=>{if(x.key==="Enter"){const ql=q.trim().toLowerCase(),m=db.products.find(p=>p.code.toLowerCase()===ql)||(prods.length===1?prods[0]:null);if(m){add(m);setQ("")}}}}/><button className="btn" onClick=${onScan}>Escanear QR</button></div>
+ return html`<div className="flex flex-col lg:flex-row gap-4 items-start"><div className="flex-1 min-w-0 w-full order-2 lg:order-1"><div className="flex gap-2 mb-2"><input autoFocus className="inp" placeholder="Buscar producto o escanear código y presionar Enter…" value=${q} onChange=${x=>setQ(x.target.value)} onKeyDown=${x=>{if(x.key==="Enter"){const ql=q.trim().toLowerCase(),m=db.products.find(p=>p.code.toLowerCase()===ql)||(prods.length===1?prods[0]:null);if(m){add(m);setQ("")}}}}/><button className="btn" onClick=${onScan}>Escanear QR</button></div>
   <div className="flex gap-2 mb-3 overflow-x-auto">${['Todos',...cats].map(c=>html`<button key=${c} className=${'btn sm '+(cat===c?'bp':'')} style=${{borderRadius:99,whiteSpace:'nowrap'}} onClick=${()=>setCat(c)}>${c}</button>`)}</div>
   <div className="grid gap-3" style=${{gridTemplateColumns:'repeat(auto-fill,minmax(180px,1fr))'}}>${prods.map(p=>{const n=(dr.items.find(x=>x.id===p.id)||{}).qty;return html`<button key=${p.id} className="card cl text-left overflow-hidden" onClick=${()=>add(p)}><div className="relative" style=${{background:'#fff',borderBottom:'1px solid var(--bd)'}}><img src=${src(pimgs(p)[0])} style=${{width:'100%',aspectRatio:'4/3',objectFit:'contain'}}/>${n&&html`<span className="nb absolute top-2 right-2">${n}</span>`}</div>
    <div className="p-2"><div className="text-xs mu uppercase">${p.brand||p.code}</div><div className="text-sm font-medium leading-snug" style=${{display:'-webkit-box',WebkitLineClamp:2,WebkitBoxOrient:'vertical',overflow:'hidden',minHeight:'2.5em'}}>${p.desc}</div>
    <div className="flex justify-between items-center mt-1"><b>${money(p.price,p.cur)}</b><span className="btn bp sm">+</span></div><div className="text-xs mu">${p.kind==='servicio'?'Servicio · '+p.unit:'Stock '+p.stock+' '+p.unit}</div></div></button>`})}</div>
   ${!prods.length&&html`<div className="mu text-center p-8">Sin resultados</div>`}</div>
-  <div className="w-full lg:w-[420px] shrink-0 lg:sticky" style=${{top:76}}><${SalePanel} db=${db} dr=${dr} setDr=${setDr} onEmit=${onEmit} last=${last} onView=${onView} cancelEdit=${cancelEdit}/></div></div>`;
+  <div className="w-full lg:w-[420px] shrink-0 lg:sticky order-1 lg:order-2" style=${{top:76}}><${SalePanel} db=${db} dr=${dr} setDr=${setDr} onEmit=${onEmit} last=${last} onView=${onView} cancelEdit=${cancelEdit}/></div></div>`;
 }
 function Docs({db,me,admin,onConvert,onView,onSeg,onEdit,onDel,toast,init={}}){
  const [f,setF]=useState(init.f||'todos'),[q,setQ]=useState(init.q||''),[sf,setSf]=useState(init.open?'Abiertas':'Todos'),[day,setDay]=useState(init.day||''),[per,setPer]=useState(init.per||'todo'),[pg,setPg]=useState(0),st=d=>d.status||'Vigente',all=db.docs.filter(d=>admin||d.by===me.id),qs=all.filter(d=>d.type==='cotizacion'),iso=n=>dAgo(n).slice(0,10);
@@ -409,7 +410,6 @@ function Cfg({db,setDb,ask,toast}){
  const sd={id:'x',type:pt,num:PFX[pt]+(pt==='cotizacion'?'000001':'00000001'),date:new Date().toISOString(),client:c0,items,cur:'PEN',disc:0,igv:true,...t,valid:new Date(Date.now()+(c.valid||7)*864e5).toISOString(),pay:'Contado',deliv:'Inmediata',byn:'Vendedor',obs:'',ver:1};
  const backup=async()=>{try{const dn=await dnl();await dn.save({filename:'respaldo_ventape_'+new Date().toISOString().slice(0,10)+'.json',data:new Blob([JSON.stringify({db})],{type:'application/json'})});toast('Respaldo generado')}catch(e){if(!(e&&e.code==='declined'))toast('No se pudo generar el respaldo')}};
  const restore=f=>{if(!f)return;const r=new FileReader();r.onload=()=>{try{const j=JSON.parse(r.result),d=j.db||j;if(!d.products||!d.clients||!d.docs)throw 0;ask({title:'Restaurar respaldo',danger:1,okText:'Restaurar',body:html`<p>Se reemplazarán todos los datos actuales por el respaldo (${d.docs.length} documentos, ${d.clients.length} clientes, ${d.products.length} productos).</p>`,ok:()=>{setDb({...d,users:d.users||db.users});toast('Respaldo restaurado')}})}catch(e){toast('El archivo no es un respaldo válido')}};r.readAsText(f)};
- const Sec=({t,children})=>html`<div className="card p-4 space-y-2"><div className="font-bold">${t}</div>${children}</div>`;
  return html`<div className="grid xl:grid-cols-5 gap-4 items-start"><div className="xl:col-span-2 space-y-3">
   <${Sec} t="Datos de la empresa"><${F} l="Razón social"><input className="inp" value=${c.name} onChange=${s('name')}/><//><div className="grid grid-cols-2 gap-2"><${F} l="RUC"><input className="inp" value=${c.ruc} onChange=${s('ruc')}/><//><${F} l="Eslogan"><input className="inp" value=${c.slogan} onChange=${s('slogan')}/><//></div><${F} l="Dirección"><input className="inp" value=${c.addr} onChange=${s('addr')}/><//>
    <${F} l="Logo corporativo"><input type="file" accept="image/*" className="inp" onChange=${x=>rd(x.target.files[0],200,u=>setC(p=>({...p,logo:u})))}/><//>${c.logo&&html`<div className="flex items-center gap-2"><img src=${c.logo} style=${{maxHeight:50}}/><button className="btn sm" onClick=${()=>setC(p=>({...p,logo:''}))}>Quitar</button></div>`}<//>
