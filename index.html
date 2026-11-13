@@ -408,8 +408,9 @@ function SharedSetup({admin,toast,onDone}){
  const go=async src=>{setBusy(true);try{await seedShared(src);onDone()}catch(e){toast('No se pudo inicializar: '+((e&&e.code)||'error'));setBusy(false)}};
  return html`<div className="min-h-screen flex items-center justify-center p-4"><div className="card p-6 max-w-lg w-full space-y-3"><div className="text-xl font-bold">Activar modo compartido</div>
   ${admin?html`<div className="text-sm mu">La base compartida está vacía. Elija con qué datos comenzar: después, todas las personas con acceso verán y editarán lo mismo en tiempo real.</div>
-   <button className="btn bp w-full" disabled=${busy} onClick=${()=>go(loc)}>Subir los datos de este navegador (${loc.products.length} productos, ${loc.clients.length} clientes, ${loc.docs.length} documentos)</button>
-   <button className="btn w-full" disabled=${busy} onClick=${()=>go(withSvc(seed()))}>Comenzar con datos de ejemplo</button>${busy&&html`<div className="text-sm mu">Subiendo datos…</div>`}`:html`<div className="text-sm mu">El administrador debe inicializar los datos compartidos antes de que usted pueda trabajar. Vuelva a abrir esta página en unos minutos.</div>`}</div></div>`;
+   <button className="btn bp w-full" disabled=${busy} onClick=${()=>go({products:[],clients:[],docs:[],cfg:seed().cfg})}>Iniciar plataforma vacía (sin datos ficticios)</button>
+   <button className="btn w-full" disabled=${busy} onClick=${()=>go(loc)}>Subir los datos de este navegador (${loc.products.length} productos, ${loc.clients.length} clientes, ${loc.docs.length} documentos)</button>
+   <button className="btn w-full" disabled=${busy} onClick=${()=>go(withSvc(seed()))}>Comenzar con datos de ejemplo</button>${busy&&html`<div className="text-sm mu">Inicializando plataforma…</div>`}`:html`<div className="text-sm mu">El administrador debe inicializar los datos compartidos antes de que usted pueda trabajar. Vuelva a abrir esta página en unos minutos.</div>`}</div></div>`;
 }
 function UsersSrv({ask,toast,me}){
  const [L,setL]=useState([]),[n,setN]=useState({name:'',user:'',pass:'',role:'vendedor'}),[pw,setPw]=useState(null),s=k=>x=>setN({...n,[k]:x.target.value});
