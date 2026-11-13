@@ -16,7 +16,18 @@ button{font:inherit;cursor:pointer}.btn{border:1px solid var(--bd);background:#f
 .row{display:flex;gap:6px;margin-top:auto;padding-top:10px}.row .btn{flex:1}
 #fab{position:fixed;right:16px;bottom:16px;z-index:30;background:var(--g);color:#fff;border:0;border-radius:99px;padding:14px 20px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.25);display:none}
 .ov{position:fixed;inset:0;background:rgba(11,18,32,.55);z-index:40;display:flex;align-items:flex-start;justify-content:center;overflow:auto;padding:16px}.md{background:#fff;border-radius:14px;max-width:760px;width:100%;margin:20px 0;padding:18px;position:relative}
-.x{position:absolute;right:12px;top:10px;border:0;background:#eef1f7;border-radius:8px;width:32px;height:32px}.g{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:640px){.g{grid-template-columns:1fr}}
+.x{position:absolute;right:12px;top:10px;border:0;background:#eef1f7;border-radius:8px;width:32px;height:32px}.g{display:grid;grid-template-columns:1fr 1fr;gap:18px}@media(max-width:640px){.g{grid-template-columns:1fr}
+main{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;padding:4px 9px 100px}
+.c .im{aspect-ratio:1/1}
+.c .b{padding:9px;gap:4px}
+.nm{font-size:13px}
+.br{font-size:10px}
+.pr{font-size:16px}
+.row{gap:5px;flex-direction:column}
+.row .btn{width:100%;min-height:40px}
+#fab{right:12px;bottom:12px;padding:13px 16px}
+}
+@media(max-width:360px){main{grid-template-columns:1fr}.row{flex-direction:row}}
 .big{width:100%;aspect-ratio:1/1;object-fit:contain;border:1px solid var(--bd);border-radius:10px}.th{display:flex;gap:6px;margin-top:8px;flex-wrap:wrap}.th img{width:56px;height:56px;object-fit:contain;border:1px solid var(--bd);border-radius:8px;cursor:pointer}
 ul{padding-left:18px;margin:6px 0}.it{display:flex;justify-content:space-between;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--bd)}.q button{width:28px;height:28px;border:1px solid var(--bd);background:#fff;border-radius:6px}
 .em{text-align:center;color:var(--mu);padding:40px;grid-column:1/-1}
@@ -30,7 +41,8 @@ let D={cfg:{},products:[]},cat='Todos',q='',sel={};
 const $=i=>document.getElementById(i),esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const im=u=>u?(u.startsWith('art:')&&window.SRC?SRC(u):(u.startsWith('/')?u:(window.SRC?SRC(u):u))):(window.SRC?SRC(''):'');
 const money=(n,c)=>(c==='USD'?'US$ ':'S/ ')+Number(n||0).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
-const wa=t=>{if(!D.cfg.wa){alert('El WhatsApp de ventas aún no está configurado.');return}window.open('https://wa.me/'+D.cfg.wa+'?text='+encodeURIComponent(t),'_blank')};
+const phone=()=>{let n=String(D.cfg.wa||'').replace(/\\D/g,'');if(n.length===9)n='51'+n;return n};
+const wa=t=>{const n=phone();if(!n||n.length<11){alert('Configure el WhatsApp de ventas con código de país. Para Perú: 51 + los 9 dígitos.');return}const url='https://wa.me/'+n+'?text='+encodeURIComponent(t);const w=window.open(url,'_blank','noopener,noreferrer');if(!w)location.href=url};
 const link=p=>new URL('./catalogo.html?p='+encodeURIComponent(p.code),location.href).href;
 const one=p=>wa('Hola '+D.cfg.name+', quisiera información de: '+p.desc+' (Cód. '+p.code+').\n'+link(p));
 function list(){return D.products.filter(p=>(cat==='Todos'||p.cat===cat)&&(p.code+' '+p.desc+' '+p.brand+' '+p.cat).toLowerCase().includes(q.toLowerCase()))}

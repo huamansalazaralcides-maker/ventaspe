@@ -1,0 +1,13 @@
+VENTAPE — CAMBIOS DE ESTA REVISIÓN
+Fecha: 13/11/2026
+
+- Catálogo WhatsApp: normaliza números peruanos de 9 dígitos a 51 + número y abre el chat con texto precargado.
+- Catálogo móvil: tarjetas y botones reorganizados para pantallas pequeñas.
+- App móvil: acceso flotante adicional para abrir el escáner QR desde cualquier pestaña.
+- Configuración: actualización funcional de setters de campos para evitar estados obsoletos al escribir.
+- Se verificó sintaxis JavaScript de index.html y catalogo.html con Node.js --check.
+
+Pendiente de activación externa:
+- Ejecutar supabase/FIX_CATALOGO_PRECIOS.sql si aún no fue ejecutado en el proyecto.
+- Desplegar Edge Function supabase/functions/admin-users con sus secretos configurados.
+- Probar login, creación de vendedor, cámara en celular y enlaces WhatsApp en el entorno publicado.

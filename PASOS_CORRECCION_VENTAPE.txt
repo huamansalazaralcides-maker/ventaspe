@@ -46,3 +46,17 @@ IMPORTANTE
 Esta entrega contiene cambios de frontend y SQL auxiliar. No se puede certificar
 la conexión real de Supabase, el despliegue de Edge Functions ni el envío de PDF
 por WhatsApp desde aquí; esas pruebas deben realizarse en el proyecto conectado.
+
+
+4) WHATSAPP DEL CATÁLOGO
+- El catálogo ahora acepta el número peruano de 9 dígitos y agrega automáticamente el prefijo 51.
+- En Configuración, registra solo los 9 dígitos o el número completo con 51.
+- En celular, WhatsApp debe estar instalado o tener una sesión web activa.
+
+5) BURBUJA QR EN MÓVIL
+- Se agregó un acceso flotante "Escanear QR" en la vista principal.
+- Requiere HTTPS y permiso de cámara; si no concede permiso, use el buscador e ingrese el código.
+
+6) CAMPOS DE CONFIGURACIÓN
+- Se actualizaron los manejadores de escritura para conservar el valor más reciente durante la edición.
+- Probar escribiendo textos largos en Dirección, Cuentas y Términos antes de guardar.
