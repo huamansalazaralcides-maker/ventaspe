@@ -1,0 +1,9 @@
+VENTAPE - CELULAR DE CONTACTO DEL VENDEDOR
+
+1) En Supabase > SQL Editor, ejecutar una sola vez el archivo supabase/AGREGAR_CELULAR_VENDEDORES.sql.
+2) En GitHub, reemplazar los archivos por esta versión (incluyendo index.html y supabase/functions/admin-users/index.ts).
+3) En Supabase > Edge Functions > admin-users > Code, actualizar el código con el index.ts incluido y desplegar de nuevo. Mantener desactivado Verify JWT with legacy secret, como se configuró anteriormente.
+4) En VentaPE > Configuración > Usuarios y accesos, escribir el celular de cada vendedor y pulsar Guardar. Para nuevos vendedores, completar también el campo Celular del vendedor al crearlos.
+5) El vendedor inicia sesión y el celular se carga automáticamente en Nueva venta y aparece en la cotización.
+
+No borrar tablas ni registros. La migración solo agrega la columna phone a profiles.

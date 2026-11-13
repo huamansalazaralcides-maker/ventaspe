@@ -20,7 +20,7 @@ Deno.serve(async (req) => {
       const email=`${username}@users.ventape.local`;
       const {data,error}=await admin.auth.admin.createUser({email,password:pass,email_confirm:true,user_metadata:{name,username}});
       if(error) return json({error:error.message},400);
-      const {error:pe}=await admin.from('profiles').upsert({id:data.user.id,name,username,role:b.role==='admin'?'admin':'vendedor'});
+      const {error:pe}=await admin.from('profiles').upsert({id:data.user.id,name,username,phone:String(b.phone||'').trim(),role:b.role==='admin'?'admin':'vendedor'});
       if(pe){await admin.auth.admin.deleteUser(data.user.id);return json({error:pe.message},400)}
       return json({ok:true});
     }
@@ -37,7 +37,7 @@ Deno.serve(async (req) => {
       const {error}=await admin.auth.admin.deleteUser(id);if(error)return json({error:error.message},400);return json({ok:true});
     }
     if(b.action==='password') { const pass=String(b.pass||'');if(pass.length<8)return json({error:'La contraseña debe tener al menos 8 caracteres'},400);const {error}=await admin.auth.admin.updateUserById(id,{password:pass});if(error)return json({error:error.message},400);return json({ok:true}); }
-    if(b.action==='update') { if(id===user.id && b.role) return json({error:'No puede cambiar su propio rol'},400);const patch:any={};if(b.role)patch.role=b.role==='admin'?'admin':'vendedor';if(b.name)patch.name=String(b.name);if(patch.role==='vendedor'){const {data:target}=await admin.from('profiles').select('role').eq('id',id).single();if(target?.role==='admin'){const {count}=await admin.from('profiles').select('*',{count:'exact',head:true}).eq('role','admin');if((count||0)<=1)return json({error:'Debe quedar al menos un administrador'},400)}}const {error}=await admin.from('profiles').update(patch).eq('id',id);if(error)return json({error:error.message},400);return json({ok:true}); }
+    if(b.action==='update') { if(id===user.id && b.role) return json({error:'No puede cambiar su propio rol'},400);const patch:any={};if(b.role)patch.role=b.role==='admin'?'admin':'vendedor';if(b.name)patch.name=String(b.name);if(b.phone!==undefined)patch.phone=String(b.phone||'').trim();if(patch.role==='vendedor'){const {data:target}=await admin.from('profiles').select('role').eq('id',id).single();if(target?.role==='admin'){const {count}=await admin.from('profiles').select('*',{count:'exact',head:true}).eq('role','admin');if((count||0)<=1)return json({error:'Debe quedar al menos un administrador'},400)}}const {error}=await admin.from('profiles').update(patch).eq('id',id);if(error)return json({error:error.message},400);return json({ok:true}); }
     return json({error:'Acción no válida'},400);
   } catch(e) { return json({error:String(e?.message||e)},500); }
 });
