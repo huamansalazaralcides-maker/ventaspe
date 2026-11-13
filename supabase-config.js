@@ -1,7 +1,7 @@
 
 /* Configuración pública de Supabase */
 window.VPE_CONFIG = {
-  url: 'https://ylaxubowqyaabsvcwyhe.supabase.co',
+  url: 'https://ylaxubowqyaabsycwyhe.supabase.co',
   anonKey: 'sb_publishable_Wi_mJfTi25qruJRzoexjLQ_gUqn1cOw',
   emailForUser: (username) => username === 'admin'
     ? 'huamansalazaralcides@gmail.com'
