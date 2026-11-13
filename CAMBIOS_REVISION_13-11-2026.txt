@@ -13,3 +13,12 @@ No se modificó el backend ni las políticas de Supabase.
 AJUSTE ADICIONAL 13/11/2026:
 - La plantilla de cotización/documento ahora presenta los términos y condiciones en líneas separadas. Detecta tanto saltos de línea como numeración (01., 02., 03.) aunque el texto venga pegado en un solo párrafo.
 - La vigencia y la nota de stock se muestran en una línea independiente.
+
+
+AJUSTE ADICIONAL — PDF Y WHATSAPP DESDE CELULAR:
+- La captura del documento para PDF se realiza sobre un lienzo fijo de 794 px (A4), independiente del ancho de pantalla del celular.
+- El PDF se pagina en hojas A4 sin estirar el documento verticalmente.
+- El botón del visor ahora prepara y comparte el archivo PDF mediante Web Share API cuando el navegador permite compartir archivos.
+- Si el navegador no permite adjuntar archivos mediante compartir, descarga el PDF y abre el chat de WhatsApp con el mensaje; en ese caso el usuario debe adjuntar el PDF descargado.
+- En el listado de documentos, el acceso WhatsApp abre el visor PDF para usar la opción de compartir archivo.
+- No se modificó el esquema, las tablas, las políticas ni los datos de Supabase.
