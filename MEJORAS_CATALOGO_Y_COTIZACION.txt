@@ -1,0 +1,22 @@
+VENTAPE - MEJORAS DE CATÁLOGO PÚBLICO Y COTIZACIONES
+
+1. Catálogo público:
+- Amplía el contenedor hasta 1600 px.
+- En pantallas grandes muestra hasta cinco productos por fila; en pantallas medianas cuatro.
+- La ficha de producto abre en una ventana más amplia, con galería grande y panel de información.
+- En móviles la ficha vuelve a una sola columna.
+- Se mantienen las URL de Supabase Storage y la carga progresiva.
+
+2. Formato de cotización/PDF:
+- Información del cliente distribuida en tres columnas para aprovechar mejor el ancho.
+- Dirección, obra, correo y otros datos pueden ocupar dos columnas y partir líneas largas.
+- Tabla con anchos definidos: Descripción recibe mayor espacio; N°, unidad y cantidad reciben menos.
+- Los textos largos se ajustan dentro de su celda y los importes conservan lectura clara.
+
+PUBLICACIÓN:
+Reemplazar los archivos index.html y catalogo.html en la raíz del repositorio, manteniendo el resto de archivos.
+No ejecutar SQL ni migrar fotografías.
+Después de publicar, recargar con Ctrl+F5 y probar:
+- catálogo público en laptop y celular;
+- abrir un producto y cambiar miniaturas;
+- emitir una cotización de prueba y revisar el PDF.
