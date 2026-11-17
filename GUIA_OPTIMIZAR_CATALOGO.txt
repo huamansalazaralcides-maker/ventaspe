@@ -1,0 +1,44 @@
+VENTAPE - OPTIMIZACIÓN DEL CATÁLOGO CON SUPABASE STORAGE
+
+QUÉ CAMBIA
+- Las fotos de productos dejan de guardarse como cadenas Base64 dentro de app_records.
+- Las fotos se guardan en el bucket público "catalogo" de Supabase Storage.
+- La función pública del catálogo deja de devolver Base64 y evita duplicar la portada.
+- La base de datos conserva únicamente las URL de las imágenes.
+- El catálogo público descarga datos livianos y el navegador carga las imágenes al mostrarlas.
+- Se mantienen hasta 6 fotos por producto y se conserva el tamaño/calidad procesados al cargarlas.
+
+PASO 1. RESPALDO
+Antes de comenzar, descarga un respaldo de VentaPE desde el módulo correspondiente y conserva el ZIP actual.
+No borres productos ni fotos actuales.
+
+PASO 2. CREAR STORAGE
+1. Ingresa a Supabase y abre el proyecto de VentaPE.
+2. Abre SQL Editor > New query.
+3. Copia todo el contenido de INSTALAR_STORAGE_CATALOGO.sql.
+4. Pulsa Run.
+5. Comprueba que la consulta final muestre el bucket "catalogo" con public = true.
+
+PASO 3. PUBLICAR EL CÓDIGO
+1. Descomprime este ZIP.
+2. Sube/reemplaza en el repositorio de GitHub los archivos del proyecto, conservando la estructura.
+3. Espera que GitHub Pages termine de publicar.
+4. Abre VentaPE e inicia sesión con el usuario administrador.
+
+PASO 4. MIGRAR LAS FOTOS EXISTENTES
+1. Entra al módulo Catálogo.
+2. Pulsa "Optimizar fotos existentes".
+3. Espera el mensaje "Migración completada". No cierres la página mientras trabaja.
+4. Si se detiene, no borres nada: las imágenes ya migradas usan URL y las pendientes siguen guardadas en los registros. Puedes volver a pulsar el botón; solo migra las que todavía están en Base64.
+
+PASO 5. PROBAR
+1. Abre el catálogo público en otra pestaña.
+2. Comprueba las fotos de varios productos y abre uno para revisar sus imágenes adicionales.
+3. En el panel, edita un producto y carga una foto nueva. Guarda y revisa que aparezca en el catálogo público.
+
+IMPORTANTE
+- No elimines el contenido antiguo ni ejecutes SQL para borrar imágenes Base64.
+- El botón de migración es para administrador y solo aparece con Supabase conectado.
+- Las nuevas imágenes se suben al bucket antes de guardar el producto. Si el bucket/políticas no están instalados, se mostrará un error y el producto no se guardará con esas fotos.
+- El bucket es público para lectura porque el catálogo es público; la carga, actualización y eliminación quedan restringidas a perfiles con role = 'admin'.
+- El límite del bucket se configuró en 8 MB por archivo. La carga de la plataforma procesa imágenes hasta 1,800 px y JPEG calidad 90%.
