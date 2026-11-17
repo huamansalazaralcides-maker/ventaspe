@@ -39,7 +39,15 @@ ul{padding-left:18px;margin:6px 0}.it{display:flex;justify-content:space-between
 <script>
 let D={cfg:{},products:[]},cat='Todos',q='',sel={};
 const $=i=>document.getElementById(i),esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
-const im=u=>u?(u.startsWith('art:')&&window.SRC?SRC(u):(u.startsWith('/')?u:(window.SRC?SRC(u):u))):(window.SRC?SRC(''):'');
+const im=u=>{
+ if(!u)return window.SRC?SRC(''):'';
+ u=String(u).trim();
+ // Las URLs públicas de Supabase Storage deben conservarse tal cual.
+ if(/^https?:\/\//i.test(u)||u.startsWith('data:')||u.startsWith('blob:'))return u;
+ if(u.startsWith('/'))return u;
+ if(u.startsWith('art:'))return window.SRC?SRC(u):u;
+ return window.SRC?SRC(u):u;
+};
 const money=(n,c)=>(c==='USD'?'US$ ':'S/ ')+Number(n||0).toLocaleString('es-PE',{minimumFractionDigits:2,maximumFractionDigits:2});
 const phone=()=>{let n=String(D.cfg.wa||'').replace(/\\D/g,'');if(n.length===9)n='51'+n;return n};
 const wa=t=>{const n=phone();if(!n||n.length<11){alert('Configure el WhatsApp de ventas con código de país. Para Perú: 51 + los 9 dígitos.');return}const url='https://wa.me/'+n+'?text='+encodeURIComponent(t);const w=window.open(url,'_blank','noopener,noreferrer');if(!w)location.href=url};
@@ -58,6 +66,12 @@ function cart(){const ids=Object.keys(sel).filter(i=>sel[i]>0),P=ids.map(i=>D.pr
  document.querySelectorAll('[data-m]').forEach(b=>b.onclick=()=>{sel[b.dataset.m]--;if(sel[b.dataset.m]<=0)delete sel[b.dataset.m];render();cart()});document.querySelectorAll('[data-p]').forEach(b=>b.onclick=()=>{sel[b.dataset.p]++;render();cart()});
  $('send').onclick=()=>{if(!P.length)return;wa('Hola '+D.cfg.name+', quisiera información y cotización de:\n'+P.map(p=>'• '+sel[p.id]+' x '+p.desc+' (Cód. '+p.code+')').join('\n')+'\n\nGracias.')}}
 document.addEventListener('click',e=>{const t=e.target.closest('[data-c],[data-o],[data-a],[data-w]');if(!t)return;if(t.dataset.c!=null){cat=t.dataset.c;render()}else if(t.dataset.o)open(t.dataset.o);else if(t.dataset.a){sel[t.dataset.a]=(sel[t.dataset.a]||0)+1;render()}else if(t.dataset.w)one(D.products.find(x=>x.id===t.dataset.w))});
+document.addEventListener('error',e=>{
+ if(e.target&&e.target.tagName==='IMG'&&!e.target.dataset.fallback){
+   e.target.dataset.fallback='1';
+   e.target.src=window.SRC?SRC(''):'';
+ }
+},true);
 $('q').oninput=e=>{q=e.target.value;render()};$('fab').onclick=cart;
 window.vpeSupabase.rpc('get_public_catalog').then(({data,error})=>{if(error)throw error;D=data;D.products=(D.products||[]).map(p=>({...p,imgs:p.imgs&&p.imgs.length?p.imgs:(p.img?[p.img]:[])}));$('nm').textContent=D.cfg.name||'Catálogo';$('sl').textContent=D.cfg.slogan||'';if(D.cfg.logo){$('lg').src=D.cfg.logo;$('lg').style.display='block'}render();const p=new URLSearchParams(location.search).get('p'),x=D.products.find(y=>y.code===p);if(x)open(x.id)}).catch(e=>{$('gr').innerHTML='<div class="em">No se pudo cargar el catálogo: '+esc(e.message||'Error')+'</div>'});
 </script></body></html>
